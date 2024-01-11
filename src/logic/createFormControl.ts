@@ -161,6 +161,15 @@ export function createFormControl<
       timer = setTimeout(callback, wait);
     };
 
+  const setFormValues = (path: string, value: unknown) => {
+    set(_formValues, path, value);
+    _options.sync &&
+      _options.sync(
+        path as Path<TFieldValues>,
+        value as PathValue<TFieldValues, Path<TFieldValues>>,
+      );
+  };
+
   const _updateValid = async (shouldUpdateValid?: boolean) => {
     if (_proxyFormState.isValid || shouldUpdateValid) {
       const isValid = _options.resolver
@@ -234,7 +243,7 @@ export function createFormControl<
         isValid: _formState.isValid,
       });
     } else {
-      set(_formValues, name, values);
+      setFormValues(name, values);
     }
   };
 
@@ -489,7 +498,7 @@ export function createFormControl<
   };
 
   const _getDirty: GetIsDirty = (name, data) => (
-    name && data && set(_formValues, name, data),
+    name && data && setFormValues(name, data),
     !deepEqual(getValues(), _defaultValues)
   );
 
@@ -538,7 +547,7 @@ export function createFormControl<
 
       if (fieldReference) {
         !fieldReference.disabled &&
-          set(_formValues, name, getFieldValueAs(value, fieldReference));
+          setFormValues(name, getFieldValueAs(value, fieldReference));
 
         fieldValue =
           isHTMLElement(fieldReference.ref) && isNullOrUndefined(value)
@@ -631,7 +640,7 @@ export function createFormControl<
     const isFieldArray = _names.array.has(name);
     const cloneValue = cloneObject(value);
 
-    set(_formValues, name, cloneValue);
+    setFormValues(name, cloneValue);
 
     if (isFieldArray) {
       _subjects.array.next({
@@ -696,7 +705,7 @@ export function createFormControl<
         );
       const watched = isWatched(name, _names, isBlurEvent);
 
-      set(_formValues, name, fieldValue);
+      setFormValues(name, fieldValue);
 
       if (isBlurEvent) {
         field._f.onBlur && field._f.onBlur(event);
@@ -973,7 +982,7 @@ export function createFormControl<
         : isUndefined(value)
         ? getFieldValue(field ? field._f : get(fields, name)._f)
         : value;
-      set(_formValues, name, inputValue);
+      setFormValues(name, inputValue);
       updateTouchAndDirty(name, inputValue, false, false, true);
     }
   };

@@ -21,6 +21,7 @@ import {
   FieldPathValues,
 } from './path';
 import { Resolver } from './resolvers';
+import { Sync } from './sync';
 import { DeepMap, DeepPartial, Noop } from './utils';
 import { RegisterOptions } from './validator';
 
@@ -116,6 +117,7 @@ export type UseFormProps<
   errors: FieldErrors<TFieldValues>;
   resetOptions: Parameters<UseFormReset<TFieldValues>>[1];
   resolver: Resolver<TFieldValues, TContext>;
+  sync: Sync<TFieldValues, FieldPath<TFieldValues>>;
   context: TContext;
   shouldFocusError: boolean;
   shouldUnregister: boolean;
